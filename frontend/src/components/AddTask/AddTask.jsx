@@ -9,6 +9,9 @@ function AddTask() {
     important: false 
   });
 
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setTask({
@@ -17,12 +20,35 @@ function AddTask() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(
-      `Task Added:\nTitle: ${task.title}\nDescription: ${task.description}\nImportant: ${task.important ? "Yes ⭐" : "No"}`
-    );
-    setTask({ title: "", description: "", important: false });
+    setLoading(true);
+    setMessage("");
+
+    try {
+      // 🔗 FRONTEND → BACKEND connection
+      // Sending task data to backend API: POST /api/todos
+      const response = await fetch("http://localhost:5000/api/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(task), // send task object as JSON
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add task");
+      }
+
+      // 🔗 BACKEND → FRONTEND response
+      // Parsing the response data (newly created todo from MongoDB)
+      const data = await response.json();
+
+      setMessage(`✅ Task Added: ${data.title}`);
+      setTask({ title: "", description: "", important: false }); // reset form
+    } catch (err) {
+      setMessage(`❌ Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -62,8 +88,13 @@ function AddTask() {
         </label>
 
         {/* Submit */}
-        <button type="submit" className="submit-btn">Add Task</button>
+        <button type="submit" className="submit-btn" disabled={loading}>
+          {loading ? "Adding..." : "Add Task"}
+        </button>
       </form>
+
+      {/* Show success/error message */}
+      {message && <p className="status-message">{message}</p>}
 
       {/* Back to Home */}
       <div className="back-home">

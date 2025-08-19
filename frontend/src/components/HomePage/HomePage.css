@@ -1,26 +1,33 @@
-/* HomePage.css */
 .homepage {
-  text-align: center;
-  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* center horizontally */
+  justify-content: flex-start;
   background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
   min-height: 100vh;
+  text-align: center;
+  padding-top: 80px;
+  /* spacing from top */
 }
 
 .title {
   font-size: 2.5rem;
   color: #2c3e50;
   margin-bottom: 30px;
+  /* space between heading and buttons */
 }
 
 .button-group {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 15px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .btn {
-  padding: 12px 25px;
+  padding: 12px 20px;
   font-size: 1rem;
   border: none;
   border-radius: 8px;
@@ -30,25 +37,26 @@
 }
 
 .btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 .add {
-  background-color: #4caf50; /* Green */
+  background-color: #4caf50;
 }
 
 .view {
-  background-color: #2196f3; /* Blue */
+  background-color: #2196f3;
 }
 
 .delete {
-  background-color: #e53935; /* Red */
+  background-color: #e53935;
 }
 
 .edit {
-  background-color: #ff9800; /* Orange */
+  background-color: #ff9800;
 }
 
 .status {
-  background-color: #9c27b0; /* Purple */
+  background-color: #9c27b0;
+  margin-bottom: 8px;
 }

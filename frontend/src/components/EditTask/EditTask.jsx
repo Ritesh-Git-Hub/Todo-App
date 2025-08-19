@@ -1,16 +1,25 @@
 // EditTask.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./EditTask.css";
 
 function EditTask() {
-  const [tasks, setTasks] = useState([
-    { id: 1, title: "Buy groceries", description: "Milk, Bread, Eggs", important: false },
-    { id: 2, title: "Finish project", description: "Complete frontend by tonight", important: true },
-    { id: 3, title: "Workout", description: "30 mins running", important: false },
-  ]);
-
+  const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
+
+  // ✅ Fetch tasks from backend on page load
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/todos");
+        const data = await response.json();
+        setTasks(data);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+    fetchTasks();
+  }, []);
 
   const handleEditClick = (task) => {
     setEditingTask({ ...task });
@@ -24,23 +33,43 @@ function EditTask() {
     }));
   };
 
-  const handleSave = () => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === editingTask.id ? editingTask : task
-      )
-    );
-    setEditingTask(null);
+  // ✅ Save edited task to backend
+  const handleSave = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/todos/${editingTask._id}`, // backend expects MongoDB _id
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(editingTask),
+        }
+      );
+
+      if (response.ok) {
+        const updatedTask = await response.json();
+        // update frontend state
+        setTasks((prev) =>
+          prev.map((task) =>
+            task._id === updatedTask._id ? updatedTask : task
+          )
+        );
+        setEditingTask(null);
+      } else {
+        console.error("Failed to update task");
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
   };
 
   return (
     <div className="edit-task-page">
       <h2 className="title">Edit Task</h2>
 
-      {/* Task List */}
+      {/* ✅ Task List (from backend) */}
       <div className="task-list">
         {tasks.map((task) => (
-          <div key={task.id} className="task-item">
+          <div key={task._id} className="task-item">
             <span>
               {task.title} {task.important && "⭐"}
             </span>
