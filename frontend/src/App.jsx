@@ -16,6 +16,10 @@ function App() {
         <Route path="/delete" element={<DeleteTask />} />
         <Route path="/edit" element={<EditTask />} />
         <Route path="/status" element={<StatusTask />} />
+        <Route path="/view" element={<ViewTasks />} />
+        <Route path="/delete" element={<DeleteTask />} />
+        <Route path="/edit" element={<EditTask />} />
+        <Route path="/status" element={<StatusTask />} />
       </Routes>
     </Router>
   );
